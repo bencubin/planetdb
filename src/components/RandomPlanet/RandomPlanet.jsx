@@ -1,39 +1,48 @@
 import { useState, useEffect } from "react";
 import SwapiService from '../../services/SwapiService';
+import Spinner from '../Spinner/Spinner';
+import ErrorIndicator from '../ErrorIndicator/ErrorIndicator';
 import './RandomPlanet.css';
 
 export default function RandomPlanet() {
-  const [id, setId] = useState('');
-  const [name, setName] = useState('');
-  const [population, setPopulation] = useState('');
-  const [rotationPeriod, setRotationPeriod] = useState('');
-  const [diameter, setDiameter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [planet, setPlanet] = useState({});
+  const {id: id, name: name, population: population, rotationPeriod: rotationPeriod, diameter: diameter} = planet;
 
   const swapiService = new SwapiService();
 
-  function updatePlanet() {
-    function getRandomInt(max) {
-      return Math.floor(Math.random() * max);
-    }
-    const randomId = getRandomInt(25) + 1;
+  function onError(err) {
+    setError(true);
+    setLoading(false);
+  } 
 
-    swapiService.getPlanet(randomId).then((planet) => {
-      setId(randomId);
-      setName(planet.name);
-      setPopulation(planet.population);
-      setRotationPeriod(planet.rotation_period);
-      setDiameter(planet.diameter);
+  function updatePlanet() {
+    console.log('_UPDATE_RANDOM_PLANET_');
+    const randomId = Math.floor(Math.random() * 18) + 2;
+
+    swapiService.getPlanet(randomId)
+    .then((planet) => {
+      setPlanet(planet);
+      setLoading(false);
+    })
+    .catch((err) => {
+      onError();
     });
   }
 
+  const hasData = !(loading || error);
+
   useEffect(() => {
-    return updatePlanet();
+    const interval = setInterval(() => {
+      updatePlanet();
+    }, 2000);
+    //return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="random-planet jumbotron rounded">
-      <img src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`} alt="Planet Image" className="planet-image" />
-
+      {loading ? <Spinner /> : hasData ? <img src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`} alt="Planet Image" className="planet-image" /> : <ErrorIndicator />}
       <div>
         <h4>{name}</h4>
         <ul className="list-group list-group-flush">

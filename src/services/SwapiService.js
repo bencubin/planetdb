@@ -1,8 +1,8 @@
 export default class SwapiService {
-  _apiBase = 'https://swapi.dev/api';
+  apiBase = 'https://swapi.dev/api';
   
   async getResouce(url) {
-    const res = await fetch(`${this._apiBase}${url}`);
+    const res = await fetch(`${this.apiBase}${url}`);
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -12,30 +12,78 @@ export default class SwapiService {
     return body;
   }
 
-  async getAllPeople() {
-    const res = await this.getResouce(`/people/`);
-    return res.results;
+  extractId(item) {
+    const idRegExp = /\/([0-9]*)\/$/;
+    return item.url.match(idRegExp)[1];
   }
 
-  getPerson(id) {
-    return this.getResouce(`/people/${id}/`);
+  // planets
+
+  transformPlanet(planet) {
+    return {
+      id: this.extractId(planet),
+      name: planet.name,
+      population: planet.population,
+      rotationPeriod: planet.rotation_period,
+      diameter: planet.diameter
+    }
   }
 
   async getAllPlanets() {
     const res = await this.getResouce(`/planets/`);
-    return res.results;
+    return res.results.map(this.transformPlanet);
   }
 
-  getPlanet(id) {
-    return this.getResouce(`/planets/${id}/`);
+  async getPlanet(id) {
+    const planet = await this.getResouce(`/planets/${id}/`);
+    return this.transformPlanet(planet);
+  }
+
+  // people
+
+  transformPerson(person) {
+    return {
+      id: this.extractId(person),
+      name: person.name,
+      gender: person.gender,
+      birthYear: person.birth_year,
+      eyeColor: person.eye_color
+    }
+  }
+
+  async getAllPeople() {
+    const res = await this.getResouce(`/people/`);
+    return res.results.map(this.transformPerson);
+  }
+
+  async getPerson(id) {
+    const person = await this.getResouce(`/people/${id}/`);
+    return this.transformPerson(person);
+  }
+
+  // starships
+
+  transformStarship(starship) {
+    return {
+      id: this.extractId(starship),
+      name: starship.name,
+      model: starship.model,
+      manufacturer: starship.manufacturer,
+      costInCredits: starship.cost_in_credits,
+      length: starship.length,
+      crew: starship.crew,
+      passengers: starship.passengers,
+      cargoCapacity: starship.cargo_capacity
+    }
   }
 
   async getAllStarships() {
     const res = await this.getResouce(`/starships/`);
-    return res.results;
+    return res.results.map(this.transformStarship);
   }
 
-  getStarship(id) {
-    return this.getResouce(`/starships/${id}/`);
-  }
+  async getStarship(id) {
+    const starship = await this.getResouce(`/starships/${id}/`);
+    return this.transformStarship(starship);
+  } 
 }
