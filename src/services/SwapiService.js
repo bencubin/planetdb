@@ -7,7 +7,7 @@ export default class SwapiService {
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
     }
-
+ 
     const body = res.json();
     return body;
   }
@@ -19,7 +19,7 @@ export default class SwapiService {
 
   // planets
 
-  transformPlanet(planet) {
+  transformPlanet = (planet) => {
     return {
       id: this.extractId(planet),
       name: planet.name,
@@ -41,7 +41,7 @@ export default class SwapiService {
 
   // people
 
-  transformPerson(person) {
+  transformPerson = (person) => {
     return {
       id: this.extractId(person),
       name: person.name,
@@ -63,7 +63,7 @@ export default class SwapiService {
 
   // starships
 
-  transformStarship(starship) {
+  transformStarship = (starship) => {
     return {
       id: this.extractId(starship),
       name: starship.name,

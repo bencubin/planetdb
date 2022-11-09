@@ -13,3 +13,7 @@
 .header ul li:hover {
   background-color: #444;
 }
+
+.pagename a {
+  color: #fff;
+}

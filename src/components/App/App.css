@@ -1,1 +1,17 @@
-  
+body {
+  margin: 0 10rem;
+}
+
+.stardb-app {
+  margin-bottom: 32px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 32px;
+}
+
+.toggle-planet {
+  margin-right: 12px;
+}

@@ -3,7 +3,7 @@ import './Header.css';
 export default function Header() {
   return (
     <div className="header d-flex">
-      <h3>
+      <h3 className="pagename">
         <a href="#">PlanetDB</a>
       </h3>
       <ul className="d-flex">
